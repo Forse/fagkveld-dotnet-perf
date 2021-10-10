@@ -1,0 +1,85 @@
+{
+  "simulations": 1000,
+  "teams": [
+    {
+      "name": "Manchester City (M, K)",
+      "expectedGoals": 2.1842105263157894
+    },
+    {
+      "name": "Manchester United (K)",
+      "expectedGoals": 1.9210526315789473
+    },
+    {
+      "name": "Liverpool (K)",
+      "expectedGoals": 1.7894736842105263
+    },
+    {
+      "name": "Chelsea (K)",
+      "expectedGoals": 1.5263157894736843
+    },
+    {
+      "name": "Leicester",
+      "expectedGoals": 1.7894736842105263
+    },
+    {
+      "name": "West Ham",
+      "expectedGoals": 1.631578947368421
+    },
+    {
+      "name": "Tottenham",
+      "expectedGoals": 1.7894736842105263
+    },
+    {
+      "name": "Arsenal",
+      "expectedGoals": 1.4473684210526316
+    },
+    {
+      "name": "Leeds",
+      "expectedGoals": 1.631578947368421
+    },
+    {
+      "name": "Everton",
+      "expectedGoals": 1.236842105263158
+    },
+    {
+      "name": "Aston Villa",
+      "expectedGoals": 1.4473684210526316
+    },
+    {
+      "name": "Newcastle",
+      "expectedGoals": 1.2105263157894737
+    },
+    {
+      "name": "Wolverhampton",
+      "expectedGoals": 0.9473684210526315
+    },
+    {
+      "name": "Crystal Palace",
+      "expectedGoals": 1.0789473684210527
+    },
+    {
+      "name": "Southampton",
+      "expectedGoals": 1.236842105263158
+    },
+    {
+      "name": "Brighton",
+      "expectedGoals": 1.0526315789473684
+    },
+    {
+      "name": "Burnley",
+      "expectedGoals": 0.868421052631579
+    },
+    {
+      "name": "Fulham (N)",
+      "expectedGoals": 0.7105263157894737
+    },
+    {
+      "name": "West Bromwich (N)",
+      "expectedGoals": 0.9210526315789473
+    },
+    {
+      "name": "Sheffield United (N)",
+      "expectedGoals": 0.5263157894736842
+    }
+  ]
+}
