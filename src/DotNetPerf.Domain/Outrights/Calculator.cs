@@ -10,6 +10,7 @@ public sealed record Markets : IEnumerable<Market>
     {
         _markets = new List<Market>();
         AddWinnerMarket(simulations, tablePositionHistory, teams);
+        AddTop4Market(simulations, tablePositionHistory, teams);
     }
 
     private void AddWinnerMarket(int simulations, TablePositionHistory tablePositionHistory, IEnumerable<Team> teams)
@@ -25,6 +26,25 @@ public sealed record Markets : IEnumerable<Market>
             outcomes[outcomesIndex++] = new Outcome(team.Name, winProbability);
         }
 
+        Array.Sort(outcomes);
+        var market = new Market(MarketType.Winner, outcomes);
+        _markets.Add(market);
+    }
+
+    private void AddTop4Market(int simulations, TablePositionHistory tablePositionHistory, IEnumerable<Team> teams)
+    {
+        var outcomes = new Outcome[teams.Count()];
+        var outcomesIndex = 0;
+        foreach (var team in teams)
+        {
+            var history = tablePositionHistory[team];
+            var timesInTop4 = history[0..4].Sum();
+
+            var winProbability = timesInTop4 / (double)simulations;
+            outcomes[outcomesIndex++] = new Outcome(team.Name, winProbability);
+        }
+
+        Array.Sort(outcomes);
         var market = new Market(MarketType.Winner, outcomes);
         _markets.Add(market);
     }
@@ -54,7 +74,7 @@ public static class Calculator
         {
             foreach (var match in matches)
             {
-                SimulateGoals(match);
+                Simulate(match);
 
                 table.AddResult(match);
 
@@ -88,7 +108,7 @@ public static class Calculator
         return matches;
     }
 
-    private static void SimulateGoals(Match match)
+    private static void Simulate(Match match)
     {
         var rng = Random.Shared;
 

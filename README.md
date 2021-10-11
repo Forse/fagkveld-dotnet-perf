@@ -1,6 +1,14 @@
 ## DotNetPerf 
 
-Test-applikasjon for prosess rundt ytelsesoptimalisering i .NET.
+Eksempel-applikasjon for prosess rundt ytelsesoptimalisering i .NET.
+Som eksempel brukes kalkulering av outrights-markeder i fotball.
+Et API endepunkt tar inn en liste med lag og "expected goals", og simulerer en sesong
+N ganger.
+
+Første utkast av applikasjonen er i `initial`-branch.
+Med utgangspunkt i denne kjører jeg profiling og benchmarking og implementerer forskjellige optimaliseringer i PRs.
+
+Se [benchmark resultater her](/tests/DotNetPerf.Benchmarks/Outrights).
 
 ### Tools
 

@@ -12,6 +12,9 @@ namespace DotNetPerf.Benchmarks.Outrights;
 
 [Orderer(SummaryOrderPolicy.FastestToSlowest, MethodOrderPolicy.Declared)]
 [MemoryDiagnoser]
+[DisassemblyDiagnoser(maxDepth: 3)]
+//[EtwProfiler]
+[EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class Outrights
 {
     private CalculateOutrights _input;
