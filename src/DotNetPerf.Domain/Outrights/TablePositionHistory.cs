@@ -19,7 +19,7 @@ public sealed record TablePositionHistory
     {
         for (int i = 0; i < table.Count; i++)
         {
-            var position = table[i];
+            ref readonly var position = ref table[i];
             _map[position.Team][i]++;
         }
     }
