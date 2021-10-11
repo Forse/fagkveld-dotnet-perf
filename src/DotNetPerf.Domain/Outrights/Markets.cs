@@ -17,13 +17,16 @@ public sealed record Markets : IEnumerable<Market>
     {
         var outcomes = new Outcome[teams.Count()];
         var outcomesIndex = 0;
+        var teamIndex = 0;
         foreach (var team in teams)
         {
-            var history = tablePositionHistory[team];
+            var history = tablePositionHistory[new TeamId(teamIndex)];
             var timesInFirstPlace = history[0];
 
             var winProbability = timesInFirstPlace / (double)simulations;
             outcomes[outcomesIndex++] = new Outcome(team.Name, winProbability);
+
+            teamIndex++;
         }
 
         Array.Sort(outcomes);
@@ -35,13 +38,16 @@ public sealed record Markets : IEnumerable<Market>
     {
         var outcomes = new Outcome[teams.Count()];
         var outcomesIndex = 0;
+        var teamIndex = 0;
         foreach (var team in teams)
         {
-            var history = tablePositionHistory[team];
+            var history = tablePositionHistory[new TeamId(teamIndex)];
             var timesInTop4 = history[0..4].Sum();
 
             var winProbability = timesInTop4 / (double)simulations;
             outcomes[outcomesIndex++] = new Outcome(team.Name, winProbability);
+
+            teamIndex++;
         }
 
         Array.Sort(outcomes);

@@ -3,33 +3,33 @@
 public sealed record Table
 {
     private readonly Position[] _positions;
-    private readonly Dictionary<Team, int> _map;
+    private readonly Dictionary<TeamId, int> _map;
 
     public int Count => _positions.Length;
 
     public ref readonly Position this[int index] => ref _positions[index];
 
-    public Table(IEnumerable<Team> teams)
+    public Table(ReadOnlySpan<TeamData> teams)
     {
-        _positions = new Position[teams.Count()];
-        _map = new(teams.Count());
+        _positions = new Position[teams.Length];
+        _map = new(teams.Length);
         var positionIndex = 0;
-        foreach (var team in teams)
+        foreach (ref readonly var team in teams)
         {
-            _positions[positionIndex] = new Position(team);
-            _map[team] = positionIndex++;
+            _positions[positionIndex] = new Position(team.Id);
+            _map[team.Id] = positionIndex++;
         }
     }
 
-    public void AddResult(Match match)
+    public void AddResult(in MatchData match)
     {
         var positions = _positions;
 
         ref var homePosition = ref positions[_map[match.HomeTeam]];
         ref var awayPosition = ref positions[_map[match.AwayTeam]];
 
-        homePosition.AddMatch(match);
-        awayPosition.AddMatch(match);
+        homePosition.AddMatch(in match);
+        awayPosition.AddMatch(in match);
     }
 
     public void Sort()
