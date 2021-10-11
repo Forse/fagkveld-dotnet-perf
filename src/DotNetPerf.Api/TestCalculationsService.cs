@@ -33,8 +33,8 @@ public sealed class TestCalculationsService : BackgroundService
 
         var timer = new Stopwatch();
 
-        input = input with { Simulations = 10_000 };
-        for (int i = 0; i < 10 && !stoppingToken.IsCancellationRequested; i++)
+        input = input with { Simulations = 100_000 };
+        for (int i = 0; i < 3 && !stoppingToken.IsCancellationRequested; i++)
         {
             timer.Start();
             _ = await _mediator.Send(input, stoppingToken);
