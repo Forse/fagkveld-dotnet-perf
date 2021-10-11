@@ -14,7 +14,7 @@ namespace DotNetPerf.Benchmarks.Outrights;
 [MemoryDiagnoser]
 [DisassemblyDiagnoser(maxDepth: 3)]
 //[EtwProfiler]
-[EventPipeProfiler(EventPipeProfile.CpuSampling)]
+//[EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class Outrights
 {
     private CalculateOutrights _input;

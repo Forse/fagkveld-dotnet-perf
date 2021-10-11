@@ -45,6 +45,8 @@ public static class Calculator
                 match.Reset();
             }
 
+            table.Sort();
+
             tablePositionHistory.Update(table);
 
             table.Reset();

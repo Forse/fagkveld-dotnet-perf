@@ -2,35 +2,59 @@
 
 public sealed record Table
 {
-    private readonly List<Position> _positions;
+    private readonly Position[] _positions;
+    private readonly Dictionary<Team, int> _map;
 
-    public int Count => _positions.Count;
+    public int Count => _positions.Length;
 
-    public Position this[int index] => _positions[index];
+    public ref readonly Position this[int index] => ref _positions[index];
 
     public Table(IEnumerable<Team> teams)
     {
-        _positions = new (teams.Count());
+        _positions = new Position[teams.Count()];
+        _map = new(teams.Count());
+        var positionIndex = 0;
         foreach (var team in teams)
-            _positions.Add(new Position(team));
+        {
+            _positions[positionIndex] = new Position(team);
+            _map[team] = positionIndex++;
+        }
     }
 
     public void AddResult(Match match)
     {
-        var homePosition = _positions.Single(p => p?.Team == match.HomeTeam);
-        var awayPosition = _positions.Single(p => p?.Team == match.AwayTeam);
+        var positions = _positions;
+
+        ref var homePosition = ref positions[_map[match.HomeTeam]];
+        ref var awayPosition = ref positions[_map[match.AwayTeam]];
 
         homePosition.AddMatch(match);
         awayPosition.AddMatch(match);
-
-        _positions.Sort();
     }
 
-    public List<Position>.Enumerator GetEnumerator() => _positions.GetEnumerator();
+    public void Sort()
+    {
+        Span<Position> positions = _positions;
+
+        positions.Sort();
+        for (int i = 0; i < positions.Length; i++)
+        {
+            ref readonly var position = ref positions[i];
+            _map[position.Team] = i;
+        }
+    }
+
+    public ReadOnlySpan<Position>.Enumerator GetEnumerator()
+    {
+        ReadOnlySpan<Position> positions = _positions;
+        return positions.GetEnumerator();
+    }
 
     public void Reset()
     {
-        foreach (var position in _positions)
+        Span<Position> positions = _positions;
+
+        foreach (ref var position in positions)
             position.Reset();
     }
 }

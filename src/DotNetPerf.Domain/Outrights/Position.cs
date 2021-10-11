@@ -2,23 +2,31 @@
 
 namespace DotNetPerf.Domain.Outrights;
 
-public sealed record Position : IComparable<Position>
+public record struct Position : IComparable<Position>
 {
     public Position(Team team)
     {
         Team = team;
+        Played = 0;
+        Won = 0;
+        Drawn = 0;
+        Lost = 0;
+        GoalsFor = 0;
+        GoalsAgainst = 0;
+        GoalDifference = 0;
+        Points = 0;
     }
 
-    public Team Team { get; }
+    public readonly Team Team { get; }
 
-    public int Played { get; private set; }
-    public int Won { get; private set; }
-    public int Drawn { get; private set; }
-    public int Lost { get; private set; }
-    public int GoalsFor { get; private set; }
-    public int GoalsAgainst { get; private set; }
-    public int GoalDifference { get; private set; }
-    public int Points { get; private set; }
+    public int Played { readonly get; private set; }
+    public int Won { readonly get; private set; }
+    public int Drawn { readonly get; private set; }
+    public int Lost { readonly get; private set; }
+    public int GoalsFor { readonly get; private set; }
+    public int GoalsAgainst { readonly get; private set; }
+    public int GoalDifference { readonly get; private set; }
+    public int Points { readonly get; private set; }
 
     public void AddMatch(Match match)
     {
@@ -64,11 +72,10 @@ public sealed record Position : IComparable<Position>
         Points = 0;
     }
 
-    public int CompareTo(Position? other)
+    public int CompareTo(Position other)
     {
         return other switch
         {
-            null => -1,
             var p when Points == p.Points => (GoalDifference - p.GoalDifference) switch
             {
                 0 => 0,
