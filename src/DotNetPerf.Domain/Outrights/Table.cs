@@ -1,23 +1,24 @@
 ﻿namespace DotNetPerf.Domain.Outrights;
 
-public sealed record Table
+public ref struct Table
 {
-    private readonly Position[] _positions;
-    private readonly Dictionary<TeamId, int> _map;
+    private readonly Span<Position> _positions;
+    private readonly Span<int> _indices;
 
     public int Count => _positions.Length;
 
     public ref readonly Position this[int index] => ref _positions[index];
 
-    public Table(ReadOnlySpan<TeamData> teams)
+    public Table(Span<Position> positions, Span<int> indices, ReadOnlySpan<TeamData> teams)
     {
-        _positions = new Position[teams.Length];
-        _map = new(teams.Length);
+        _positions = positions;
+        _indices = indices;
+
         var positionIndex = 0;
         foreach (ref readonly var team in teams)
         {
             _positions[positionIndex] = new Position(team.Id);
-            _map[team.Id] = positionIndex++;
+            _indices[team.Id] = positionIndex++;
         }
     }
 
@@ -25,8 +26,8 @@ public sealed record Table
     {
         var positions = _positions;
 
-        ref var homePosition = ref positions[_map[match.HomeTeam]];
-        ref var awayPosition = ref positions[_map[match.AwayTeam]];
+        ref var homePosition = ref positions[_indices[match.HomeTeam]];
+        ref var awayPosition = ref positions[_indices[match.AwayTeam]];
 
         homePosition.AddMatch(in match);
         awayPosition.AddMatch(in match);
@@ -40,7 +41,7 @@ public sealed record Table
         for (int i = 0; i < positions.Length; i++)
         {
             ref readonly var position = ref positions[i];
-            _map[position.Team] = i;
+            _indices[position.Team] = i;
         }
     }
 
