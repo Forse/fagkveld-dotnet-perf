@@ -19,18 +19,18 @@ AMD Ryzen 5 5600X, 1 CPU, 12 logical and 6 physical cores
 | Calculate |        1000 | 299.4 ms | 5.85 ms | 5.75 ms | 5000.0000 |      0 MB |     84 MB |
 
 
-#### EventPipe profiling
+#### Visual Studio 2022 profiler
+
+![Visual Studio 2022 profiler](/imgs/visual-studio-profiler.png)
+
+#### Other tools
+
+##### EventPipe profiling
 
 Speedscope view
 
 ![EventPipe profiling in Speedscope](/imgs/speedscope.png)
 
-
-#### Visual Studio 2022 profiler
-
-![Visual Studio 2022 profiler](/imgs/visual-studio-profiler.png)
-
-
-#### OpenTelemetry + Jaeger distributed tracing
+##### OpenTelemetry + Jaeger distributed tracing
 
 ![OpenTelemetry + Jaeger distributed tracing](/imgs/jaeger.png)
