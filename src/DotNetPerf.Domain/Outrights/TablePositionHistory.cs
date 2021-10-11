@@ -2,17 +2,17 @@
 
 public sealed record TablePositionHistory
 {
-    private readonly Dictionary<Team, int[]> _map;
+    private readonly Dictionary<TeamId, int[]> _map;
 
     public int Count => _map.Count;
 
-    public int[] this[Team team] => _map[team];
+    public int[] this[TeamId team] => _map[team];
 
-    public TablePositionHistory(IEnumerable<Team> teams)
+    public TablePositionHistory(ReadOnlySpan<TeamData> teams)
     {
-        _map = new (teams.Count());
-        foreach (var team in teams)
-            _map.Add(team, new int[teams.Count()]);
+        _map = new (teams.Length);
+        foreach (ref readonly var team in teams)
+            _map.Add(team.Id, new int[teams.Length]);
     }
 
     public void Update(Table table)

@@ -1,4 +1,6 @@
-﻿namespace DotNetPerf.Domain.Outrights;
+﻿using System.Diagnostics;
+
+namespace DotNetPerf.Domain.Outrights;
 
 public static class Calculator
 {
@@ -12,9 +14,17 @@ public static class Calculator
         activity?.SetTag("simulations", simulations);
 
         TablePositionHistory tablePositionHistory;
-        using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(SimulateActivity))
         {
-            tablePositionHistory = Simulate(simulations, teams);
+            Span<TeamData> teamData = stackalloc TeamData[teams.Count()];
+
+            var teamIndex = 0;
+            foreach (var team in teams)
+                teamData[teamIndex] = new TeamData(new TeamId(teamIndex++), team.ExpectedGoals);
+
+            using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(SimulateActivity))
+            {
+                tablePositionHistory = Simulate(simulations, teamData);
+            }
         }
 
         Markets markets;
@@ -26,9 +36,10 @@ public static class Calculator
         return markets;
     }
 
-    private static TablePositionHistory Simulate(int simulations, IEnumerable<Team> teams)
+    private static TablePositionHistory Simulate(int simulations, ReadOnlySpan<TeamData> teams)
     {
-        var matches = GetMatches(teams);
+        Span<MatchData> matches = stackalloc MatchData[GetMatchCount(teams)];
+        GetMatches(teams, matches);
 
         var tablePositionHistory = new TablePositionHistory(teams);
 
@@ -36,11 +47,14 @@ public static class Calculator
 
         for (int simulation = 0; simulation < simulations; simulation++)
         {
-            foreach (var match in matches)
+            foreach (ref var match in matches)
             {
-                Simulate(match);
+                ref readonly var homeTeam = ref teams[match.HomeTeam.Id];
+                ref readonly var awayTeam = ref teams[match.AwayTeam.Id];
 
-                table.AddResult(match);
+                Simulate(ref match, in homeTeam, in awayTeam);
+
+                table.AddResult(in match);
 
                 match.Reset();
             }
@@ -55,33 +69,35 @@ public static class Calculator
         return tablePositionHistory;
     }
 
-    private static Match[] GetMatches(IEnumerable<Team> teams)
+    private static int GetMatchCount(ReadOnlySpan<TeamData> teams) => (teams.Length - 1) * teams.Length;
+
+    private static void GetMatches(ReadOnlySpan<TeamData> teams, Span<MatchData> matches)
     {
-        var matches = new Match[(teams.Count() - 1) * teams.Count()];
+        Debug.Assert(matches.Length == GetMatchCount(teams));
+
         var matchIndex = 0;
-        var matchups = new HashSet<(Team Home, Team Away)>();
-        foreach (var home in teams)
+        var matchups = new HashSet<(TeamId Home, TeamId Away)>();
+        foreach (ref readonly var home in teams)
         {
-            foreach (var away in teams)
+            foreach (ref readonly var away in teams)
             {
                 if (home == away)
                     continue;
 
-                if (matchups.Add((home, away)))
-                    matches[matchIndex++] = new Match(home, away);
+                if (matchups.Add((home.Id, away.Id)))
+                    matches[matchIndex++] = new MatchData(home.Id, away.Id);
             }
         }
-        return matches;
     }
 
-    private static void Simulate(Match match)
+    private static void Simulate(ref MatchData match, in TeamData homeTeam, in TeamData awayTeam)
     {
         var rng = Random.Shared;
 
         // Knuth's poisson algorithm
 
         const double homeAdvantage = 0.25;
-        var homePoissonLimit = Math.Exp(-(match.HomeTeam.ExpectedGoals + homeAdvantage));
+        var homePoissonLimit = Math.Exp(-(homeTeam.ExpectedGoals + homeAdvantage));
 
         var product = rng.NextDouble();
         while (product >= homePoissonLimit)
@@ -90,7 +106,7 @@ public static class Calculator
             product *= rng.NextDouble();
         }
 
-        var awayPoissonLimit = Math.Exp(-match.AwayTeam.ExpectedGoals);
+        var awayPoissonLimit = Math.Exp(-awayTeam.ExpectedGoals);
 
         product = rng.NextDouble();
         while (product >= awayPoissonLimit)

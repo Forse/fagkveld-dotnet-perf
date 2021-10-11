@@ -4,7 +4,7 @@ namespace DotNetPerf.Domain.Outrights;
 
 public record struct Position : IComparable<Position>
 {
-    public Position(Team team)
+    public Position(TeamId team)
     {
         Team = team;
         Played = 0;
@@ -17,7 +17,7 @@ public record struct Position : IComparable<Position>
         Points = 0;
     }
 
-    public readonly Team Team { get; }
+    public readonly TeamId Team { get; }
 
     public int Played { readonly get; private set; }
     public int Won { readonly get; private set; }
@@ -28,7 +28,7 @@ public record struct Position : IComparable<Position>
     public int GoalDifference { readonly get; private set; }
     public int Points { readonly get; private set; }
 
-    public void AddMatch(Match match)
+    public void AddMatch(in MatchData match)
     {
         Debug.Assert(match.HomeTeam == Team || match.AwayTeam == Team);
         var isHomeTeam = match.HomeTeam == Team;
@@ -72,7 +72,7 @@ public record struct Position : IComparable<Position>
         Points = 0;
     }
 
-    public int CompareTo(Position other)
+    public readonly int CompareTo(Position other)
     {
         return other switch
         {
