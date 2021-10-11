@@ -43,7 +43,11 @@ public static class Calculator
 
         var tablePositionHistory = new TablePositionHistory(teams);
 
-        var table = new Table(teams);
+        var table = new Table(
+            stackalloc Position[teams.Length],
+            stackalloc int[teams.Length],
+            teams
+        );
 
         for (int simulation = 0; simulation < simulations; simulation++)
         {

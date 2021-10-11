@@ -16,12 +16,12 @@ AMD Ryzen 5 5600X, 1 CPU, 12 logical and 6 physical cores
 ```
 |    Method | Simulations |     Mean |    Error |   StdDev | Code Size | Allocated |
 |---------- |------------ |---------:|---------:|---------:|----------:|----------:|
-| Calculate |        1000 | 31.45 ms | 0.279 ms | 0.261 ms |      8 KB |     33 KB |
+| Calculate |        1000 | 28.24 ms | 0.098 ms | 0.091 ms |      8 KB |     32 KB |
 
 
 #### Visual Studio 2022 profiler
 
-![Visual Studio 2022 profiler](/imgs/visual-studio-profiler-02.png)
+![Visual Studio 2022 profiler](/imgs/visual-studio-profiler-03.png)
 
 #### Other tools
 
