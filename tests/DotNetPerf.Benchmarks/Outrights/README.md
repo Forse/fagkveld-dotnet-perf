@@ -29,3 +29,8 @@ Speedscope view
 #### Visual Studio 2022 profiler
 
 ![Visual Studio 2022 profiler](/imgs/visual-studio-profiler.png)
+
+
+#### OpenTelemetry + Jaeger distributed tracing
+
+![OpenTelemetry + Jaeger distributed tracing](/imgs/jaeger.png)

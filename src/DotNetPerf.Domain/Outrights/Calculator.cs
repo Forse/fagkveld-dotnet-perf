@@ -1,65 +1,29 @@
-﻿using System.Collections;
-
-namespace DotNetPerf.Domain.Outrights;
-
-public sealed record Markets : IEnumerable<Market>
-{
-    private readonly List<Market> _markets;
-
-    public Markets(int simulations, TablePositionHistory tablePositionHistory, IEnumerable<Team> teams)
-    {
-        _markets = new List<Market>();
-        AddWinnerMarket(simulations, tablePositionHistory, teams);
-        AddTop4Market(simulations, tablePositionHistory, teams);
-    }
-
-    private void AddWinnerMarket(int simulations, TablePositionHistory tablePositionHistory, IEnumerable<Team> teams)
-    {
-        var outcomes = new Outcome[teams.Count()];
-        var outcomesIndex = 0;
-        foreach (var team in teams)
-        {
-            var history = tablePositionHistory[team];
-            var timesInFirstPlace = history[0];
-
-            var winProbability = timesInFirstPlace / (double)simulations;
-            outcomes[outcomesIndex++] = new Outcome(team.Name, winProbability);
-        }
-
-        Array.Sort(outcomes);
-        var market = new Market(MarketType.Winner, outcomes);
-        _markets.Add(market);
-    }
-
-    private void AddTop4Market(int simulations, TablePositionHistory tablePositionHistory, IEnumerable<Team> teams)
-    {
-        var outcomes = new Outcome[teams.Count()];
-        var outcomesIndex = 0;
-        foreach (var team in teams)
-        {
-            var history = tablePositionHistory[team];
-            var timesInTop4 = history[0..4].Sum();
-
-            var winProbability = timesInTop4 / (double)simulations;
-            outcomes[outcomesIndex++] = new Outcome(team.Name, winProbability);
-        }
-
-        Array.Sort(outcomes);
-        var market = new Market(MarketType.Winner, outcomes);
-        _markets.Add(market);
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => _markets.GetEnumerator();
-
-    public IEnumerator<Market> GetEnumerator() => _markets.GetEnumerator();
-}
+﻿namespace DotNetPerf.Domain.Outrights;
 
 public static class Calculator
 {
+    private static readonly string RootActivity = $"{nameof(Calculator)}.{nameof(Run)}";
+    private static readonly string SimulateActivity = $"{RootActivity}.{nameof(Simulate)}";
+    private static readonly string ExtractMarketsActivity = $"{RootActivity}.ExtractMarkets";
+
     public static Markets Run(int simulations, IEnumerable<Team> teams)
     {
-        var tablePositionHistory = Simulate(simulations, teams);
-        return new Markets(simulations, tablePositionHistory, teams);
+        using var activity = Diagnostics.ActivitySource.StartActivity(RootActivity);
+        activity?.SetTag("simulations", simulations);
+
+        TablePositionHistory tablePositionHistory;
+        using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(SimulateActivity))
+        {
+            tablePositionHistory = Simulate(simulations, teams);
+        }
+
+        Markets markets;
+        using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(ExtractMarketsActivity))
+        {
+            markets = new Markets(simulations, tablePositionHistory, teams);
+        }
+
+        return markets;
     }
 
     private static TablePositionHistory Simulate(int simulations, IEnumerable<Team> teams)

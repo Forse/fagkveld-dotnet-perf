@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{FCE17F
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		docker-compose.yml = docker-compose.yml
 		Global.cs = Global.cs
 		global.json = global.json
 		README.md = README.md
@@ -26,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_files", "_files", "{FCE17F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetPerf.Domain", "src\DotNetPerf.Domain\DotNetPerf.Domain.csproj", "{1EBFBE22-0D41-4011-80A5-AE068AD9B809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetPerf.Benchmarks", "tests\DotNetPerf.Benchmarks\DotNetPerf.Benchmarks.csproj", "{5F28220F-D2E6-424D-A32E-2A82D165821B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetPerf.Benchmarks", "tests\DotNetPerf.Benchmarks\DotNetPerf.Benchmarks.csproj", "{5F28220F-D2E6-424D-A32E-2A82D165821B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

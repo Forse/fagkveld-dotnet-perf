@@ -1,4 +1,8 @@
 using DotNetPerf.Application;
+using DotNetPerf.Domain;
+
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,14 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new() { Title = "DotNetPerf.Api", Version = "v1" });
 });
 
+builder.Services.AddOpenTelemetryTracing(
+    builder => builder
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("DotNetPerf"))
+        .AddSource(Diagnostics.ActivitySource.Name)
+        .AddAspNetCoreInstrumentation()
+        .AddJaegerExporter()
+);
+
 builder.Services.AddApplication();
 
 #if RUN_TEST_CALCULATIONS
@@ -20,7 +32,6 @@ builder.Services.AddHostedService<TestCalculationsService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
