@@ -2,18 +2,20 @@
 
 Eksempel-applikasjon for prosess rundt ytelsesoptimalisering i .NET.
 Som eksempel brukes kalkulering av outrights-markeder i fotball.
-Et API endepunkt tar inn en liste med lag og "expected goals", og simulerer en sesong
-N ganger.
+Et API endepunkt tar inn en liste med lag og "expected goals", simulerer en sesong
+N ganger og returnerer markedene "Winner" og "Top 4" - sannsynlighet for henholdsvis seier og topp 4 plassering på tabellen.
 
-Første utkast av applikasjonen er i `initial`-branch.
+Første utkast av applikasjonen er i `initial`-branch, som er helt vanlig implementasjon uten spesielle optimaliseringer.
 Med utgangspunkt i denne kjører jeg profiling og benchmarking og implementerer forskjellige optimaliseringer i PRs.
 
 Se [benchmark resultater her](/tests/DotNetPerf.Benchmarks/Outrights).
 
-### Tools
+### Verktøy
 
 * [benchmarkdotnet](https://benchmarkdotnet.org/)
-  * Also has [DisassemblyDiagnoser](https://benchmarkdotnet.org/articles/features/disassembler.html)
+  * [DisassemblyDiagnoser](https://benchmarkdotnet.org/articles/features/disassembler.html)
+  * Profiling med [ETW](https://benchmarkdotnet.org/articles/features/etwprofiler.html)
+  * Profiling med [EventPipe](https://benchmarkdotnet.org/articles/features/event-pipe-profiler.html) (kan bruke [Speedscope](https://www.speedscope.app/))
 * [PerfView](https://github.com/microsoft/perfview)
 * [dotTrace](https://www.jetbrains.com/profiler/), [dotMemory](https://www.jetbrains.com/dotmemory/)
 * [Visual Studio Profiler](https://docs.microsoft.com/en-us/visualstudio/profiling/?view=vs-2022)
