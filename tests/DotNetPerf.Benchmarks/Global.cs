@@ -8,3 +8,7 @@ global using BenchmarkDotNet.Configs;
 global using BenchmarkDotNet.Order;
 
 global using System.Runtime.CompilerServices;
+global using System.IO;
+global using System.Linq;
+global using System.Text.Json;
+global using System.Threading.Tasks;

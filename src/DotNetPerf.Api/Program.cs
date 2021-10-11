@@ -14,6 +14,10 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddApplication();
 
+#if RUN_TEST_CALCULATIONS
+builder.Services.AddHostedService<TestCalculationsService>();
+#endif
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

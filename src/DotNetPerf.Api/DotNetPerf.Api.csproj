@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <RunTestCalculations>true</RunTestCalculations>
+    <DefineConstants Condition="'$(RunTestCalculations)'=='true'">RUN_TEST_CALCULATIONS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

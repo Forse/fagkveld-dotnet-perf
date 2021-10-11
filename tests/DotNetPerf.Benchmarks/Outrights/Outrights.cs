@@ -1,40 +1,44 @@
-using System.Text.Json;
-
-using DotNetPerf.Api.Dtos;
+﻿using DotNetPerf.Api.Dtos;
 using DotNetPerf.Application;
 using DotNetPerf.Application.Outrights;
 using DotNetPerf.Domain;
+using DotNetPerf.Domain.Outrights;
 
 using Mediator;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Xunit;
+namespace DotNetPerf.Benchmarks.Outrights;
 
-namespace DotNetPerf.UnitTests;
-
-public class CalculatorTests
+[Orderer(SummaryOrderPolicy.FastestToSlowest, MethodOrderPolicy.Declared)]
+[MemoryDiagnoser]
+public class Outrights
 {
-    [Fact]
-    public async Task Test_Calculation()
+    private CalculateOutrights _input;
+
+    [Params(1_000)]
+    public int Simulations { get; set; }
+
+    [GlobalSetup]
+    public async Task Setup()
     {
         var sp = new ServiceCollection().AddApplication().BuildServiceProvider();
 
         var mediator = sp.GetRequiredService<IMediator>();
 
         var inputJson = await File.ReadAllTextAsync("testinput.json");
+
         var input = JsonSerializer.Deserialize<OutrightsCalculationRequestDto>(
-            inputJson, 
+            inputJson,
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
         );
 
-        Assert.NotNull(input);
-
-        var markets = await mediator.Send(new CalculateOutrights(
+        _input = new CalculateOutrights(
             input.Simulations,
             input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals))
-        ));
-
-        Assert.NotNull(markets);
+        );
     }
+
+    [Benchmark]
+    public Markets Calculate() => Calculator.Run(Simulations, _input.Teams);
 }

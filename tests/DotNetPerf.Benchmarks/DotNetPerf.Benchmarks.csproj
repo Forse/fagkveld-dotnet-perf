@@ -13,10 +13,7 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
     <PackageReference Include="ObjectLayoutInspector" Version="0.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Outrights\" />
+    <PackageReference Include="Mediator.Abstractions" Version="0.1.*-*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +21,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Remove="../../Global.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DotNetPerf.Api\DotNetPerf.Api.csproj" />
+    <ProjectReference Include="..\..\src\DotNetPerf.Application\DotNetPerf.Application.csproj" />
   </ItemGroup>
 
 </Project>
