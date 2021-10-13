@@ -10,6 +10,10 @@ Med utgangspunkt i denne kjører jeg profiling og benchmarking og implementerer f
 
 Se [benchmark resultater her](/tests/DotNetPerf.Benchmarks/Outrights).
 
+### Prereqs
+
+* .NET 6 RC 1+
+
 ### Verktøy
 
 * [benchmarkdotnet](https://benchmarkdotnet.org/)
