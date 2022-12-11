@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RunTestCalculations>false</RunTestCalculations>
+    <RunTestCalculations>true</RunTestCalculations>
     <DefineConstants Condition="'$(RunTestCalculations)'=='true'">RUN_TEST_CALCULATIONS</DefineConstants>
   </PropertyGroup>
 

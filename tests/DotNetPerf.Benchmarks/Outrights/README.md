@@ -6,22 +6,22 @@ PL sesong, 20 lag med 38 kamper hver, simuleres 1000 ganger.
 
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19043.1237 (21H1/May2021Update)
+BenchmarkDotNet=v0.13.2, OS=Windows 11 (10.0.22621.819)
 AMD Ryzen 5 5600X, 1 CPU, 12 logical and 6 physical cores
-.NET SDK=6.0.100-rc.1.21463.6
-  [Host]     : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT
-  DefaultJob : .NET 6.0.0 (6.0.21.45113), X64 RyuJIT
+.NET SDK=7.0.100
+  [Host]     : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
+  DefaultJob : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
 
 
 ```
-|    Method | Simulations |     Mean |    Error |   StdDev | Code Size | Allocated |
-|---------- |------------ |---------:|---------:|---------:|----------:|----------:|
-| Calculate |        1000 | 14.44 ms | 0.109 ms | 0.102 ms |      9 KB |     32 KB |
+|    Method | Simulations |     Mean |    Error |   StdDev | BranchInstructions/Op | BranchMispredictions/Op | CacheMisses/Op | Code Size | Allocated |
+|---------- |------------ |---------:|---------:|---------:|----------------------:|------------------------:|---------------:|----------:|----------:|
+| Calculate |        1000 | 16.95 ms | 0.101 ms | 0.089 ms |            15,518,379 |                 763,401 |         31,974 |   8,877 B |  21.17 KB |
 
 
 #### Visual Studio 2022 profiler
 
-![Visual Studio 2022 profiler](/imgs/visual-studio-profiler-04.png)
+![Visual Studio 2022 profiler](/imgs/visual-studio-profiler-05.png)
 
 #### Other tools
 
