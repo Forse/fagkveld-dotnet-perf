@@ -28,7 +28,7 @@ public sealed class TestCalculationsService : BackgroundService
 
         var input = new CalculateOutrights(
             inputDto.Simulations,
-            inputDto.Teams.Select(t => new Team(t.Name, t.ExpectedGoals))
+            inputDto.Teams.Select(t => new Team(t.Name, t.ExpectedGoals)).ToArray()
         );
 
         var timer = new Stopwatch();

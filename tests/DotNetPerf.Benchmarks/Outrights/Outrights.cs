@@ -13,6 +13,7 @@ namespace DotNetPerf.Benchmarks.Outrights;
 [Orderer(SummaryOrderPolicy.FastestToSlowest, MethodOrderPolicy.Declared)]
 [MemoryDiagnoser]
 [DisassemblyDiagnoser(maxDepth: 3)]
+[HardwareCounters(HardwareCounter.BranchInstructions, HardwareCounter.BranchMispredictions, HardwareCounter.CacheMisses)]
 //[EtwProfiler]
 //[EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class Outrights
@@ -38,7 +39,7 @@ public class Outrights
 
         _input = new CalculateOutrights(
             input.Simulations,
-            input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals))
+            input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals)).ToArray()
         );
     }
 

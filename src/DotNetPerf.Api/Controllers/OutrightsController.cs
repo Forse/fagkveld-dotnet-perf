@@ -19,7 +19,7 @@ public class OutrightsController : ApiControllerBase
     {
         var markets = await Mediator.Send(new CalculateOutrights(
             input.Simulations,
-            input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals))
+            input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals)).ToArray()
         ));
 
         var dto = markets
