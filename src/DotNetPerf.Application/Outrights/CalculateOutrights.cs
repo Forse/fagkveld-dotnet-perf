@@ -5,7 +5,7 @@ namespace DotNetPerf.Application.Outrights;
 
 public sealed record CalculateOutrights(
     int Simulations,
-    IEnumerable<Team> Teams
+    IReadOnlyList<Team> Teams
 ) : IRequest<Markets>;
 
 public sealed class CalculateOutrightsHandler :

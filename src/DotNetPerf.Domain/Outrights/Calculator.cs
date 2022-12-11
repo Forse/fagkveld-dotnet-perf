@@ -10,18 +10,17 @@ public static class Calculator
     private static readonly string ExtractMarketsActivity = $"{RootActivity}.ExtractMarkets";
 
     [SkipLocalsInit]
-    public static Markets Run(int simulations, IEnumerable<Team> teams)
+    public static Markets Run(int simulations, IReadOnlyList<Team> teams)
     {
         using var activity = Diagnostics.ActivitySource.StartActivity(RootActivity);
         activity?.SetTag("simulations", simulations);
 
         TablePositionHistory tablePositionHistory;
         {
-            Span<TeamData> teamData = stackalloc TeamData[teams.Count()];
+            Span<TeamData> teamData = stackalloc TeamData[teams.Count];
 
-            var teamIndex = 0;
-            foreach (var team in teams)
-                teamData[teamIndex] = new TeamData(new TeamId(teamIndex++), team.ExpectedGoals);
+            for (int i = 0; i < teams.Count; i++)
+                teamData[i] = new TeamData(new TeamId(i), teams[i].ExpectedGoals);
 
             using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(SimulateActivity))
             {
@@ -39,7 +38,7 @@ public static class Calculator
     }
 
     [SkipLocalsInit]
-    private static TablePositionHistory Simulate(int simulations, ReadOnlySpan<TeamData> teams)
+    private static TablePositionHistory Simulate(int simulations, Span<TeamData> teams)
     {
         Span<MatchData> matches = stackalloc MatchData[GetMatchCount(teams)];
         GetMatches(teams, matches);
@@ -58,12 +57,12 @@ public static class Calculator
         {
             foreach (ref var match in matches)
             {
-                ref readonly var homeTeam = ref teams[match.HomeTeam.Id];
-                ref readonly var awayTeam = ref teams[match.AwayTeam.Id];
+                ref var homeTeam = ref teams[match.HomeTeam.Id];
+                ref var awayTeam = ref teams[match.AwayTeam.Id];
 
-                Simulate(ref match, in homeTeam, in awayTeam, ref rng);
+                Simulate(ref match, ref homeTeam, ref awayTeam, ref rng);
 
-                table.AddResult(in match);
+                table.AddResult(ref match);
 
                 match.Reset();
             }
@@ -101,7 +100,7 @@ public static class Calculator
 
     [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private static void Simulate(ref MatchData match, in TeamData homeTeam, in TeamData awayTeam, ref Xoroshiro128Plus rng)
+    private static void Simulate(ref MatchData match, ref TeamData homeTeam, ref TeamData awayTeam, ref Xoroshiro128Plus rng)
     {
         // Knuth's poisson algorithm
 

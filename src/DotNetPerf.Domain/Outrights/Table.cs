@@ -22,15 +22,15 @@ public ref struct Table
         }
     }
 
-    public void AddResult(in MatchData match)
+    public void AddResult(ref MatchData match)
     {
         var positions = _positions;
 
         ref var homePosition = ref positions[_indices[match.HomeTeam]];
         ref var awayPosition = ref positions[_indices[match.AwayTeam]];
 
-        homePosition.AddMatch(in match);
-        awayPosition.AddMatch(in match);
+        homePosition.AddMatch(ref match);
+        awayPosition.AddMatch(ref match);
     }
 
     public void Sort()

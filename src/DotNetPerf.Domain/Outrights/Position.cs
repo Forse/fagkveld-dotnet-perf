@@ -28,7 +28,7 @@ public record struct Position : IComparable<Position>
     public int GoalDifference { readonly get; private set; }
     public int Points { readonly get; private set; }
 
-    public void AddMatch(in MatchData match)
+    public void AddMatch(ref MatchData match)
     {
         Debug.Assert(match.HomeTeam == Team || match.AwayTeam == Team);
         var isHomeTeam = match.HomeTeam == Team;
