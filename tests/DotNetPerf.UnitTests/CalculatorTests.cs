@@ -31,7 +31,7 @@ public class CalculatorTests
         Assert.NotNull(input);
 
         var markets = await mediator.Send(new CalculateOutrights(
-            input.Simulations,
+            input!.Simulations,
             input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals))
         ));
 

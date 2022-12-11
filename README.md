@@ -3,14 +3,14 @@
 Eksempel-applikasjon for prosess rundt ytelsesoptimalisering i .NET.
 Som eksempel brukes kalkulering av outrights-markeder i fotball.
 Et API endepunkt tar inn en liste med lag og "expected goals", simulerer en sesong
-N ganger og returnerer markedene "Winner" og "Top 4" - sannsynlighet for henholdsvis seier og topp 4 plassering på tabellen.
+N ganger og returnerer markedene "Winner" og "Top 4" - sannsynlighet for henholdsvis seier og topp 4 plassering pÃ¥ tabellen.
 
-Første utkast av applikasjonen er i `initial`-branch, som er helt vanlig implementasjon uten spesielle optimaliseringer.
-Med utgangspunkt i denne kjører jeg profiling og benchmarking og implementerer forskjellige optimaliseringer i PRs.
+FÃ¸rste utkast av applikasjonen er i `initial`-branch, som er helt vanlig implementasjon uten spesielle optimaliseringer.
+Med utgangspunkt i denne kjÃ¸rer jeg profiling og benchmarking og implementerer forskjellige optimaliseringer i PRs.
 
 Se [benchmark resultater her](/tests/DotNetPerf.Benchmarks/Outrights).
 
-### Verktøy
+### VerktÃ¸y
 
 * [benchmarkdotnet](https://benchmarkdotnet.org/)
   * [DisassemblyDiagnoser](https://benchmarkdotnet.org/articles/features/disassembler.html)
@@ -22,14 +22,14 @@ Se [benchmark resultater her](/tests/DotNetPerf.Benchmarks/Outrights).
 * Distributed tracing
   * [opentelemetry](https://opentelemetry.io/)
   * [Jaeger](https://www.jaegertracing.io/)
-* [ObjectLayoutInspector](https://github.com/SergeyTeplyakov/ObjectLayoutInspector) for å se størrelsen på en class/struct i en gitt runtime
-* [Sharplab](https://sharplab.io/) for å se på codegen - IL og JIT asm
+* [ObjectLayoutInspector](https://github.com/SergeyTeplyakov/ObjectLayoutInspector) for Ã¥ se stÃ¸rrelsen pÃ¥ en class/struct i en gitt runtime
+* [Sharplab](https://sharplab.io/) for Ã¥ se pÃ¥ codegen - IL og JIT asm
 * [ILSpy](https://github.com/icsharpcode/ILSpy)
 
 ### Ressurser
 
 * [awesome-dot-net-performance](https://github.com/adamsitnik/awesome-dot-net-performance)
-* [Dotnetos på YouTube](https://www.youtube.com/c/Dotnetos)
+* [Dotnetos pÃ¥ YouTube](https://www.youtube.com/c/Dotnetos)
 
 ### Data innhenting
 

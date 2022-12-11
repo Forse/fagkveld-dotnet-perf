@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mediator.SourceGenerator" Version="0.1.*-*">
+    <PackageReference Include="Mediator.SourceGenerator" Version="2.0.*">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Mediator.Abstractions" Version="0.1.*-*" />
+    <PackageReference Include="Mediator.Abstractions" Version="2.0.*" />
   </ItemGroup>
 
   <ItemGroup>
