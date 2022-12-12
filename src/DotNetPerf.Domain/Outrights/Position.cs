@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace DotNetPerf.Domain.Outrights;
 
@@ -32,32 +33,49 @@ public record struct Position : IComparable<Position>
     {
         Debug.Assert(match.HomeTeam == Team || match.AwayTeam == Team);
         var isHomeTeam = match.HomeTeam == Team;
+        var isAwayTeam = !isHomeTeam;
 
         var isWin = (isHomeTeam && match.IsHomeWin) || (!isHomeTeam && match.IsAwayWin);
+        var isDraw = match.IsDraw;
+        var isLost = !isWin && !isDraw;
 
         Played++;
 
-        if (isWin)
-        {
-            Won++;
-            Points += 3;
-        }
-        else if (match.IsDraw)
-        {
-            Drawn++;
-            Points += 1;
-        }
-        else
-        {
-            Lost++;
-        }
+        Won += Unsafe.As<bool, int>(ref isWin);
+        Drawn += Unsafe.As<bool, int>(ref isDraw);
+        Lost += Unsafe.As<bool, int>(ref isLost);
+        Points += (Unsafe.As<bool, int>(ref isWin) * 3) + (Unsafe.As<bool, int>(ref isDraw));
 
-        var goalsFor = isHomeTeam ? match.HomeGoals : match.AwayGoals;
-        var goalsAgainst = isHomeTeam ? match.AwayGoals : match.HomeGoals;
+        var goalsFor = (Unsafe.As<bool, int>(ref isHomeTeam) * match.HomeGoals) +
+            (Unsafe.As<bool, int>(ref isAwayTeam) * match.AwayGoals);
+        var goalsAgainst = (Unsafe.As<bool, int>(ref isHomeTeam) * match.AwayGoals) +
+            (Unsafe.As<bool, int>(ref isAwayTeam) * match.HomeGoals);
 
         GoalsFor += goalsFor;
         GoalsAgainst += goalsAgainst;
         GoalDifference += goalsFor - goalsAgainst;
+
+        //if (isWin)
+        //{
+        //    Won++;
+        //    Points += 3;
+        //}
+        //else if (match.IsDraw)
+        //{
+        //    Drawn++;
+        //    Points += 1;
+        //}
+        //else
+        //{
+        //    Lost++;
+        //}
+
+        //var goalsFor = isHomeTeam ? match.HomeGoals : match.AwayGoals;
+        //var goalsAgainst = isHomeTeam ? match.AwayGoals : match.HomeGoals;
+
+        //GoalsFor += goalsFor;
+        //GoalsAgainst += goalsAgainst;
+        //GoalDifference += goalsFor - goalsAgainst;
     }
 
     public void Reset()
