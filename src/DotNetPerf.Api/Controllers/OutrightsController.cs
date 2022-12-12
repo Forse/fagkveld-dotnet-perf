@@ -17,9 +17,9 @@ public class OutrightsController : ApiControllerBase
     [HttpPost]
     public async Task<ActionResult<IEnumerable<OutrightMarketDto>>> Calculate([FromBody] OutrightsCalculationRequestDto input)
     {
-        var markets = await Mediator.Send(new CalculateOutrights32bit(
+        var markets = await Mediator.Send(new CalculateOutrights64bit(
             input.Simulations,
-            input.Teams.Select(t => new Team<float>(t.Name, (float)t.ExpectedGoals)).ToArray()
+            input.Teams.Select(t => new Team<double>(t.Name, t.ExpectedGoals)).ToArray()
         ));
 
         var dto = markets

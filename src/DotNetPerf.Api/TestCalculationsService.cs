@@ -26,9 +26,9 @@ public sealed class TestCalculationsService : BackgroundService
         if (inputDto is null)
             throw new Exception("Couldnt read testinput for calculation");
 
-        var input = new CalculateOutrights32bit(
+        var input = new CalculateOutrights64bit(
             inputDto.Simulations,
-            inputDto.Teams.Select(t => new Team<float>(t.Name, (float)t.ExpectedGoals)).ToArray()
+            inputDto.Teams.Select(t => new Team<double>(t.Name, t.ExpectedGoals)).ToArray()
         );
 
         var timer = new Stopwatch();

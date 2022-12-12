@@ -3,6 +3,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <TieredPGO>true</TieredPGO>
+      <ReadyToRun></ReadyToRun>
   </PropertyGroup>
   
   
