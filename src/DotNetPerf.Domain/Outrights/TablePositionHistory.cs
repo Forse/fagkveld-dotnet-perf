@@ -1,6 +1,9 @@
-﻿namespace DotNetPerf.Domain.Outrights;
+﻿using System.Numerics;
 
-public sealed record TablePositionHistory
+namespace DotNetPerf.Domain.Outrights;
+
+public sealed record TablePositionHistory<TNumericType>
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>
 {
     private readonly Dictionary<TeamId, int[]> _map;
 
@@ -8,14 +11,14 @@ public sealed record TablePositionHistory
 
     public int[] this[TeamId team] => _map[team];
 
-    public TablePositionHistory(ReadOnlySpan<TeamData> teams)
+    public TablePositionHistory(ReadOnlySpan<TeamData<TNumericType>> teams)
     {
         _map = new (teams.Length);
         foreach (ref readonly var team in teams)
             _map.Add(team.Id, new int[teams.Length]);
     }
 
-    public void Update(Table table)
+    public void Update(Table<TNumericType> table)
     {
         for (int i = 0; i < table.Count; i++)
         {

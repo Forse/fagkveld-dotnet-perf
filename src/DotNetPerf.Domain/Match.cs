@@ -1,6 +1,9 @@
-﻿namespace DotNetPerf.Domain;
+﻿using System.Numerics;
 
-public sealed record Match(Team HomeTeam, Team AwayTeam)
+namespace DotNetPerf.Domain;
+
+public sealed record Match<TNumericType>(Team<TNumericType> HomeTeam, Team<TNumericType> AwayTeam)
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>
 {
     public int HomeGoals { get; set; }
 
@@ -18,7 +21,7 @@ public sealed record Match(Team HomeTeam, Team AwayTeam)
 
     public bool IsAwayWin => AwayGoals > HomeGoals;
 
-    public bool Equals(Match? other) => (HomeTeam, AwayTeam) == (other?.HomeTeam, other?.AwayTeam);
+    public bool Equals(Match<TNumericType>? other) => (HomeTeam, AwayTeam) == (other?.HomeTeam, other?.AwayTeam);
 
     public override int GetHashCode() => (HomeTeam, AwayTeam).GetHashCode();
 }

@@ -30,9 +30,9 @@ public class CalculatorTests
 
         Assert.NotNull(input);
 
-        var markets = await mediator.Send(new CalculateOutrights(
+        var markets = await mediator.Send(new CalculateOutrights32bit(
             input!.Simulations,
-            input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals)).ToArray()
+            input.Teams.Select(t => new Team<float>(t.Name, (float)t.ExpectedGoals)).ToArray()
         ));
 
         Assert.NotNull(markets);

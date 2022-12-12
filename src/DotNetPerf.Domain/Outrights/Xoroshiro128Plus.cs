@@ -1,5 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+using InlineIL;
+
+using static InlineIL.IL.Emit;
 
 namespace DotNetPerf.Domain.Outrights;
 
@@ -9,12 +14,11 @@ namespace DotNetPerf.Domain.Outrights;
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
 [SkipLocalsInit]
-public struct Xoroshiro128Plus
+public struct Xoroshiro128Plus<TNumericType> 
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>
 {
-    private const ulong DOUBLE_MASK = (1L << 53) - 1;
-    private const double NORM_53 = 1.0d / (1L << 53);
-    private const ulong FLOAT_MASK = (1L << 24) - 1;
-    private const float NORM_24 = 1.0f / (1L << 24);
+    private static readonly ulong MASK;
+    private static readonly TNumericType NORM;
 
     private const int A = 24;
     private const int B = 16;
@@ -22,6 +26,22 @@ public struct Xoroshiro128Plus
 
     private ulong state0;
     private ulong state1;
+
+    static Xoroshiro128Plus()
+    {
+        if (typeof(TNumericType) == typeof(float))
+        {
+            MASK = (1L << 24) - 1;
+            NORM = TNumericType.CreateChecked(1.0) / TNumericType.CreateChecked(1L << 24);
+        }
+        else if (typeof(TNumericType) == typeof(double))
+        {
+            MASK = (1L << 53) - 1;
+            NORM = TNumericType.CreateChecked(1.0) / TNumericType.CreateChecked(1L << 53);
+        }
+        else
+            throw new InvalidProgramException();
+    }
 
     public Xoroshiro128Plus(Random? random = null)
     {
@@ -69,14 +89,17 @@ public struct Xoroshiro128Plus
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public double NextDouble()
+    public TNumericType NextFloating()
     {
-        return (NextInternal() & DOUBLE_MASK) * NORM_53;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public float NextFloat()
-    {
-        return (NextInternal() & FLOAT_MASK) * NORM_24;
+        // InlineIL to avoid CreateChecked on the generic floating type, which would add overhead..
+        Ldarg_0();
+        Call(new MethodRef(typeof(Xoroshiro128Plus<TNumericType>), nameof(NextInternal)));
+        Ldsfld(new FieldRef(typeof(Xoroshiro128Plus<TNumericType>), nameof(MASK)));
+        And();
+        Conv_R_Un();
+        Conv_R4();
+        Ldsfld(new FieldRef(typeof(Xoroshiro128Plus<TNumericType>), nameof(NORM)));
+        Mul();
+        return IL.Return<TNumericType>();
     }
 }

@@ -1,26 +1,28 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace DotNetPerf.Domain.Outrights;
 
-public static class Calculator
+public static class Calculator<TNumericType>
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>
 {
-    private static readonly string RootActivity = $"{nameof(Calculator)}.{nameof(Run)}";
+    private static readonly string RootActivity = $"{nameof(Calculator<TNumericType>)}.{nameof(Run)}";
     private static readonly string SimulateActivity = $"{RootActivity}.{nameof(Simulate)}";
     private static readonly string ExtractMarketsActivity = $"{RootActivity}.ExtractMarkets";
 
     [SkipLocalsInit]
-    public static Markets Run(int simulations, IReadOnlyList<Team> teams)
+    public static Markets<TNumericType> Run(int simulations, IReadOnlyList<Team<TNumericType>> teams)
     {
         using var activity = Diagnostics.ActivitySource.StartActivity(RootActivity);
         activity?.SetTag("simulations", simulations);
 
-        TablePositionHistory tablePositionHistory;
+        TablePositionHistory<TNumericType> tablePositionHistory;
         {
-            Span<TeamData> teamData = stackalloc TeamData[teams.Count];
+            Span<TeamData<TNumericType>> teamData = stackalloc TeamData<TNumericType>[teams.Count];
 
             for (int i = 0; i < teams.Count; i++)
-                teamData[i] = new TeamData(new TeamId(i), teams[i].ExpectedGoals);
+                teamData[i] = new TeamData<TNumericType>(new TeamId(i), teams[i].ExpectedGoals);
 
             using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(SimulateActivity))
             {
@@ -28,30 +30,30 @@ public static class Calculator
             }
         }
 
-        Markets markets;
+        Markets<TNumericType> markets;
         using (var simulateActivity = Diagnostics.ActivitySource.StartActivity(ExtractMarketsActivity))
         {
-            markets = new Markets(simulations, tablePositionHistory, teams);
+            markets = new Markets<TNumericType>(simulations, tablePositionHistory, teams);
         }
 
         return markets;
     }
 
     [SkipLocalsInit]
-    private static TablePositionHistory Simulate(int simulations, Span<TeamData> teams)
+    private static TablePositionHistory<TNumericType> Simulate(int simulations, Span<TeamData<TNumericType>> teams)
     {
         Span<MatchData> matches = stackalloc MatchData[GetMatchCount(teams)];
         GetMatches(teams, matches);
 
-        var tablePositionHistory = new TablePositionHistory(teams);
+        var tablePositionHistory = new TablePositionHistory<TNumericType>(teams);
 
-        var table = new Table(
+        var table = new Table<TNumericType>(
             stackalloc Position[teams.Length],
             stackalloc int[teams.Length],
             teams
         );
 
-        var rng = new Xoroshiro128Plus(Random.Shared);
+        var rng = new Xoroshiro128Plus<TNumericType>(Random.Shared);
 
         for (int simulation = 0; simulation < simulations; simulation++)
         {
@@ -77,9 +79,9 @@ public static class Calculator
         return tablePositionHistory;
     }
 
-    private static int GetMatchCount(ReadOnlySpan<TeamData> teams) => (teams.Length - 1) * teams.Length;
+    private static int GetMatchCount(ReadOnlySpan<TeamData<TNumericType>> teams) => (teams.Length - 1) * teams.Length;
 
-    private static void GetMatches(ReadOnlySpan<TeamData> teams, Span<MatchData> matches)
+    private static void GetMatches(ReadOnlySpan<TeamData<TNumericType>> teams, Span<MatchData> matches)
     {
         Debug.Assert(matches.Length == GetMatchCount(teams));
 
@@ -100,26 +102,26 @@ public static class Calculator
 
     [SkipLocalsInit]
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private static void Simulate(ref MatchData match, ref TeamData homeTeam, ref TeamData awayTeam, ref Xoroshiro128Plus rng)
+    private static void Simulate(ref MatchData match, ref TeamData<TNumericType> homeTeam, ref TeamData<TNumericType> awayTeam, ref Xoroshiro128Plus<TNumericType> rng)
     {
         // Knuth's poisson algorithm
 
         var homePoissonLimit = homeTeam.HomePoissonLimit;
 
-        var product = rng.NextDouble();
+        var product = rng.NextFloating();
         while (product >= homePoissonLimit)
         {
             match.HomeGoals++;
-            product *= rng.NextDouble();
+            product *= rng.NextFloating();
         }
 
         var awayPoissonLimit = awayTeam.PoissonLimit;
 
-        product = rng.NextDouble();
+        product = rng.NextFloating();
         while (product >= awayPoissonLimit)
         {
             match.AwayGoals++;
-            product *= rng.NextDouble();
+            product *= rng.NextFloating();
         }
     }
 }

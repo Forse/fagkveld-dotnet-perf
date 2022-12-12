@@ -1,9 +1,11 @@
-﻿namespace DotNetPerf.Domain.Outrights;
+﻿using System.Numerics;
 
-public sealed record Outcome(string Ref, double Probability) :
-    IComparable<Outcome>
+namespace DotNetPerf.Domain.Outrights;
+
+public sealed record Outcome<TNumericType>(string Ref, double Probability) : IComparable<Outcome<TNumericType>>
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>
 {
-    public int CompareTo(Outcome? other)
+    public int CompareTo(Outcome<TNumericType>? other)
     {
         return other switch
         {

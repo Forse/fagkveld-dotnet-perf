@@ -1,3 +1,6 @@
-﻿namespace DotNetPerf.Domain.Outrights;
+﻿using System.Numerics;
 
-public sealed record Market(MarketType Type, IEnumerable<Outcome> Outcomes);
+namespace DotNetPerf.Domain.Outrights;
+
+public sealed record Market<TNumericType>(MarketType Type, IEnumerable<Outcome<TNumericType>> Outcomes)
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>;

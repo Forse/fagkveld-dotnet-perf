@@ -1,6 +1,9 @@
-﻿namespace DotNetPerf.Domain.Outrights;
+﻿using System.Numerics;
 
-public ref struct Table
+namespace DotNetPerf.Domain.Outrights;
+
+public ref struct Table<TNumericType>
+    where TNumericType : unmanaged, IBinaryFloatingPointIeee754<TNumericType>
 {
     private readonly Span<Position> _positions;
     private readonly Span<int> _indices;
@@ -9,7 +12,7 @@ public ref struct Table
 
     public ref readonly Position this[int index] => ref _positions[index];
 
-    public Table(Span<Position> positions, Span<int> indices, ReadOnlySpan<TeamData> teams)
+    public Table(Span<Position> positions, Span<int> indices, ReadOnlySpan<TeamData<TNumericType>> teams)
     {
         _positions = positions;
         _indices = indices;

@@ -18,7 +18,8 @@ namespace DotNetPerf.Benchmarks.Outrights;
 //[EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class Outrights
 {
-    private CalculateOutrights _input;
+    private CalculateOutrights32bit _input_32bit;
+    private CalculateOutrights64bit _input_64bit;
 
     [Params(1_000)]
     public int Simulations { get; set; }
@@ -37,12 +38,19 @@ public class Outrights
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
         );
 
-        _input = new CalculateOutrights(
+        _input_32bit = new CalculateOutrights32bit(
             input.Simulations,
-            input.Teams.Select(t => new Team(t.Name, t.ExpectedGoals)).ToArray()
+            input.Teams.Select(t => new Team<float>(t.Name, (float)t.ExpectedGoals)).ToArray()
+        );
+        _input_64bit = new CalculateOutrights64bit(
+            input.Simulations,
+            input.Teams.Select(t => new Team<double>(t.Name, t.ExpectedGoals)).ToArray()
         );
     }
 
     [Benchmark]
-    public Markets Calculate() => Calculator.Run(Simulations, _input.Teams);
+    public Markets<float> Calculate_32bit() => Calculator<float>.Run(Simulations, _input_32bit.Teams);
+
+    [Benchmark]
+    public Markets<double> Calculate_64bit() => Calculator<double>.Run(Simulations, _input_64bit.Teams);
 }
